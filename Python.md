@@ -1237,20 +1237,128 @@ print(python_data)   # OrderedDict — same structure as JSON equivalent
 
 **What happened:** Worked through the full ch. 18 — CSV reading with `csv.reader` and `DictReader`, writing with `csv.writer` and `DictWriter`, custom delimiters (TSV), JSON parsing with `json.loads`/`json.dumps`, XML parsing with `xml.etree.ElementTree`, and `xmltodict` for converting XML directly to Python dicts. Built two programs: `CSV_JSON_XML_Files.py` (all chapter examples) and `removeCsvHeader.py` (end-of-chapter project — loops through all CSV files in a directory, strips the header row, writes the result to a `headerRemoved/` subfolder).
 
+Real issues hit: (1) `example3.csv` was actually a binary Excel file renamed to `.csv` — caused `UnicodeDecodeError: 'utf-8' codec can't decode byte 0xaa` — fixed by creating a real plaintext CSV with `write_text()`. (2) XML `ParseError: not well-formed` — caused by line breaks inside attribute values in the XML string (e.g. `xmlns:xsi=\n"http://..."`) — fixed by reformatting the XML string to keep each tag on its own line without breaking mid-attribute.
 
 **Learned (vs C#):** `json.loads()` / `json.dumps()` map directly to C#'s `JsonSerializer.Deserialize<T>()` / `JsonSerializer.Serialize()` — same concept (JSON string ↔ object), just dynamic typing means no generic type parameter needed in Python. JSON `null` → Python `None`, JSON `true`/`false` → Python `True`/`False` — the casing difference is a real gotcha when switching between languages. `DictReader` is more useful than plain `csv.reader` for real-world CSV files that have headers — accessing `row['Timestamp']` is much cleaner than `row[0]`. `DictWriter` handles column ordering automatically — you define the field names once in the constructor and it doesn't matter what order you pass keys in the dict, which is genuinely cleaner than managing column indices manually. XML is significantly more verbose than JSON for the same data — `json.loads()` one-lines what takes multiple `ET.fromstring()` + indexing calls to navigate. `newline=''` on `open()` for CSV writing prevents Windows from adding double newlines — Python's text mode adds `\r\n` and csv.writer also adds `\r\n`, causing blank lines between every row without it.
 
 ---
 
-## Date:
+## Date: 07/02/2026
 
 **Topic:** Keeping Time, Scheduling Tasks, and Launching Programs (ch. 19)
 
 **Code:**
 
-**What happened:**
+```python
+import time, datetime, subprocess, threading
 
-**Learned:**
+# ── TIME MODULE ──────────────────────────────────────────────
+# time.time() — Unix timestamp (seconds since epoch)
+print(time.time())           # e.g. 1751500000.123
+time.sleep(1)                # pause execution for 1 second
+
+# Measuring elapsed time
+start_time = time.time()
+# ... some code ...
+elapsed = time.time() - start_time
+print(f'Elapsed: {elapsed:.2f} seconds')
+
+# ── DATETIME MODULE ──────────────────────────────────────────
+# datetime.datetime objects
+dt = datetime.datetime(2026, 7, 2, 18, 30, 0)
+print(dt.year, dt.month, dt.day)
+print(dt.hour, dt.minute, dt.second)
+
+# datetime.datetime.now() — current date and time
+now = datetime.datetime.now()
+print(str(now))
+
+# Comparing datetimes
+halloween = datetime.datetime(2026, 10, 31)
+print((halloween - now).days)   # days until Halloween
+
+# timedelta — represents a duration
+delta = datetime.timedelta(days=11, hours=10, minutes=9)
+print(delta.days, delta.seconds, delta.total_seconds())
+
+# Adding/subtracting timedelta from datetime
+print(now + datetime.timedelta(days=1000))  # 1000 days from now
+
+# Converting Unix timestamp → datetime
+print(datetime.datetime.fromtimestamp(time.time()))
+
+# strftime — datetime → formatted string
+print(now.strftime('%Y/%m/%d %H:%M:%S'))   # 2026/07/02 18:30:00
+print(now.strftime('%I:%M %p'))             # 6:30 PM
+
+# strptime — string → datetime
+dt = datetime.datetime.strptime('July 2 2026', '%B %d %Y')
+print(dt)
+
+# ── STOPWATCH PROJECT ────────────────────────────────────────
+# Manual stopwatch using time.time()
+print('Press ENTER to start. Press ENTER again to record a lap.')
+input()
+start_time = time.time()
+lap_num = 1
+while True:
+    input()
+    lap_time = round(time.time() - start_time, 2)
+    print(f'Lap #{lap_num}: {lap_time} seconds')
+    lap_num += 1
+
+# ── COUNTDOWN TIMER WITH ALARM ───────────────────────────────
+time_left = 60   # seconds
+while time_left > 0:
+    print(time_left, end='\r')   # \r overwrites current line
+    time.sleep(1)
+    time_left -= 1
+# Play alarm when done
+subprocess.Popen(['C:/Windows/Media/chord.wav'],
+                  shell=True)   # Windows sound
+
+# ── SUBPROCESS MODULE ────────────────────────────────────────
+# subprocess.run() — run a command, wait for it to finish
+result = subprocess.run(['python', '--version'],
+                        capture_output=True, text=True)
+print(result.stdout)
+print(result.returncode)   # 0 = success
+
+# subprocess.Popen() — run a command WITHOUT waiting
+proc = subprocess.Popen(['notepad.exe'])   # opens Notepad immediately
+# script continues while Notepad is open
+
+# subprocess.run() with shell=True (Windows)
+subprocess.run('dir', shell=True)
+
+# Capture output from a command
+result = subprocess.run(['ipconfig'], capture_output=True, text=True)
+print(result.stdout)
+
+# ── THREADING ────────────────────────────────────────────────
+# Run a function in a separate thread
+def my_task():
+    time.sleep(5)
+    print('Task complete')
+
+thread = threading.Thread(target=my_task)
+thread.start()
+print('Main program continues while task runs in background')
+thread.join()   # wait for thread to finish before continuing
+
+# ── TIMESTAMP PROJECT ────────────────────────────────────────
+# Write current timestamp to a file on demand
+while True:
+    input('Press ENTER to record a timestamp.')
+    timestamp = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    with open('timestamp.txt', 'a') as f:
+        f.write(timestamp + '\n')
+    print(f'Timestamp recorded: {timestamp}')
+```
+
+**What happened:** Worked through the full ch. 19 — `time.time()` for Unix timestamps and measuring elapsed time, `time.sleep()` for pausing execution, `datetime.datetime` objects (creating, comparing, arithmetic with `timedelta`), `strftime()`/`strptime()` for string formatting/parsing, `subprocess.run()` vs `subprocess.Popen()` for launching external programs, and `threading.Thread` for running tasks concurrently. Built four programs: `stopwatch.py` (lap timer using `time.time()` deltas), `simplecountdown.py` (countdown timer with `\r` to overwrite the same line), `timestamp.py` (records timestamps to a file on each Enter keypress), and `Time_Scheduling.py` (all chapter examples combined).
+
+**Learned (vs C#):** `time.time()` returns a Unix timestamp (float seconds since Jan 1 1970) — equivalent to C#'s `DateTimeOffset.UtcNow.ToUnixTimeSeconds()` but returns a float with millisecond precision. `datetime.datetime` maps directly to C#'s `DateTime` — same concepts (year/month/day/hour/minute/second), different method names. `timedelta` is Python's equivalent of C#'s `TimeSpan` — both represent a duration rather than a point in time, and both support arithmetic with datetime/DateTime objects. `strftime()` / `strptime()` map to C#'s `DateTime.ToString("format")` / `DateTime.ParseExact()` — same concept, Python uses `%Y/%m/%d` style format codes vs C#'s `yyyy/MM/dd`. `subprocess.run()` waits for the command to complete and returns a result — equivalent to C#'s `Process.Start()` with `WaitForExit()`. `subprocess.Popen()` starts the process and immediately continues — equivalent to `Process.Start()` without `WaitForExit()`. `threading.Thread` maps to C#'s `Task.Run()` or `Thread` class — same idea of running work concurrently in the background while the main program continues. `\r` (carriage return without newline) overwrites the current terminal line — useful for countdown displays — no direct C# Console equivalent without `Console.SetCursorPosition()`.
 
 ---
 

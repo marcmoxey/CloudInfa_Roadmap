@@ -91,3 +91,34 @@ print(dt)
 
 
 # Launching other programs from python
+import subprocess
+subprocess.run(['C:\\Windows\\System32\\calc.exe'])
+calc_proc = subprocess.Popen(['C:\\Windows\\System32\\calc.exe'])
+result = calc_proc.poll() == None
+print(result)
+result = calc_proc.wait() # Doesn't retun untill calculator closes 
+print(result)
+result = calc_proc.poll()
+print(result)
+
+# import subprocess
+# paint_proc = subprocess.Popen('c:\\Windows\\System32\\mspaint.exe')
+# paint_proc.kill()
+
+
+# Passing Command Line Arguments to Processes
+result = subprocess.run(['C:\\Windows\\notepad.exe','C:\\Users\\moxey\\Desktop\DevSecOps_Roadmap\\Stage_002\\Ch_019\\hello.txt' ])
+print(result)
+
+
+# Receiving Output from launched Commands
+proc = subprocess.run(['ping', '-n', '4','nostarch.com'], capture_output=True, text=True)
+print(proc.stdout)
+
+
+# Running Task Scheduler, launched, and cron
+file_obj = open('hello2.txt', 'w') # Create hello2.txt file
+file_obj.write('Hello, world!')
+file_obj.close()
+import subprocess
+subprocess.run(['start','hello2.txt'], shell=True)
