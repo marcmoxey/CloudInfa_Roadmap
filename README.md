@@ -133,7 +133,7 @@ Python.md           # Python learning journal — real bugs, real fixes
 
 ## Career Target
 
-Building toward **Cloud Infrastructure / Platform Engineering** roles in NYC\
+Building toward **Cloud Infrastructure / Platform Engineering** roles in NYC
 
 **Certifications in progress:**
 - AWS Solutions Architect Associate (SAA-C03) — studying alongside Stage 3
