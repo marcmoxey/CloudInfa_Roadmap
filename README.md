@@ -133,9 +133,7 @@ Python.md           # Python learning journal — real bugs, real fixes
 
 ## Career Target
 
-Building toward **Cloud Infrastructure / Platform Engineering** roles in NYC private sector and **DevSecOps** roles in DC/NoVA govtech.
-
-Expected job search: Stage 5-6 (approx. November 2026)
+Building toward **Cloud Infrastructure / Platform Engineering** roles in NYC\
 
 **Certifications in progress:**
 - AWS Solutions Architect Associate (SAA-C03) — studying alongside Stage 3
@@ -144,9 +142,4 @@ Expected job search: Stage 5-6 (approx. November 2026)
 
 ---
 
-## Security Notes
 
-- No credentials, API keys, or `.pem` files are committed to this repo
-- `.DS_Store` and `.obsidian` files are gitignored
-- `labcheck.py` uses `getpass` for password input — never stores credentials
-- AWS access keys stored in `~/.aws/credentials` (not in repo)
