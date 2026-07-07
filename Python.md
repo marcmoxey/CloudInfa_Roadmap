@@ -1362,26 +1362,172 @@ while True:
 
 ---
 
-## Date:
+## Date: 07/07/2026
 
 **Topic:** Paramiko — SSH from Python (Stage 2 build target)
 
 **Code:**
 
-**What happened:**
+```python
+import paramiko
 
-**Learned:**
+# Create SSH client
+ssh = paramiko.SSHClient()
+
+# Auto-add host key (for home lab — don't use in production without verification)
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+# Connect
+ssh.connect(
+    hostname='100.108.108.86',   # Tailscale IP — works from anywhere
+    port=22,
+    username='mmoxey',
+    password='...',
+    look_for_keys=False,         # don't look for SSH key files
+    allow_agent=False,           # don't use SSH agent
+)
+
+# Run a command remotely — returns three streams
+stdin, stdout, stderr = ssh.exec_command('df -h /')
+
+# Read the output — .read() gets bytes, .decode() converts to string
+output = stdout.read().decode('utf-8')
+print(output)
+
+# Always close the connection
+ssh.close()
+```
+
+**What happened:** Learned the core Paramiko SSHClient pattern: create client → set host key policy → connect → exec_command → read stdout → close. The key insight is that `exec_command()` returns three file-like objects (stdin, stdout, stderr) — you call `.read().decode('utf-8')` on stdout to get a plain string of the command's output. Each `exec_command()` call is a separate, independent command execution — not an interactive shell session.
+
+**Learned:** `paramiko.AutoAddPolicy()` automatically adds unknown hosts to known_hosts — convenient for a home lab but would be a security risk in production (you'd want to verify the host fingerprint). `look_for_keys=False` and `allow_agent=False` force password authentication only — important when you want predictable behavior and aren't using SSH key files. `exec_command()` is NOT an interactive shell — each call is independent, so you can't run `cd /some/dir` and then run a command there in a subsequent call. If you need to chain commands, send them as one string: `ssh.exec_command('cd /some/dir && ls')`.
 
 ---
 
-## Date:
+## Date: 07/07/2026
 
-**Topic:** Putting it together — the SSH lab-check tool (Stage 2 build)
+**Topic:** Putting it together — the labcheck CLI tool (Stage 2 build) ✅
 
 **Final script:**
 
-**What happened:**
+```python
+import argparse, paramiko, getpass, re, time, datetime
 
-**Learned:**
+parser = argparse.ArgumentParser(prog='Labcheck', description='Check if Beelink is healthy')
+parser.add_argument('--host', required=True, type=str, help='IP address of remote server')
+parser.add_argument('--user', required=True, type=str, help='remote username')
+parser.add_argument('--port', type=int, default=22, help='SSH port (default: 22)')
+parser.add_argument('-p', '--password', type=str, help='remote password')
+parser.add_argument('-k', '--key', default=None, type=str, help='path to .pem key file (EC2)')
+parser.add_argument('-v', '--verbosity', help='increase output verbosity', action='store_true')
+args = parser.parse_args()
 
----
+try:
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    if args.key:
+        # Key-based auth (EC2)
+        ssh.connect(
+            hostname=args.host,
+            port=args.port,
+            username=args.user,
+            key_filename=args.key,
+            look_for_keys=False,
+            allow_agent=False,
+        )
+    else:
+        # Password auth (Beelink)
+        password = getpass.getpass()
+        ssh.connect(
+            hostname=args.host,
+            port=args.port,
+            username=args.user,
+            password=password,
+            look_for_keys=False,
+            allow_agent=False,
+        )
+
+    try:
+        # Disk usage
+        stdin, stdout, stderr = ssh.exec_command('df -h /')
+        disk_usage_output = stdout.read().decode('utf-8')
+        disk_usage_match = re.search(r"\d+%", disk_usage_output)
+        disk_usage_result = disk_usage_match.group(0)
+
+        # Memory — use -m not -g (t2.micro only has 1GB, rounds to 0 in -g)
+        stdin_memory, stdout_memory, stderr_memory = ssh.exec_command('free -m')
+        memory_output = stdout_memory.read().decode('utf-8')
+        memory_pattern = re.compile(r'^Mem:\s+(\d+)\s+(\d+)', re.MULTILINE)
+        memory_match = re.search(memory_pattern, memory_output)
+        memory_used = memory_match.group(2)
+        memory_total = memory_match.group(1)
+        memory_current_usage = (int(memory_used) / int(memory_total)) * 100
+
+        # Uptime
+        stdin_uptime, stdout_uptime, stderr_uptime = ssh.exec_command('uptime -p')
+        uptime_output = stdout_uptime.read().decode('utf-8').strip('\n')
+
+        dt = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        result = f'''
+        =====================================
+        Beelink Health Report
+        {dt}
+        =====================================
+        Host:    {args.host}
+        Disk:    {disk_usage_result} used
+        Memory:  {memory_used}MB / {memory_total}MB ({memory_current_usage:.2f}% used)
+        Uptime:  {uptime_output}
+        Status:  All systems normal
+        =====================================
+        '''
+
+        if int(disk_usage_result[:-1]) > 80:
+            print('WARNING - Disk above 80%')
+        else:
+            print(f"{result}")
+
+    except Exception as err:
+        print(f'Error: {err}')
+
+    ssh.close()
+
+except paramiko.AuthenticationException as err:
+    print(f"Authentication failed: {err}")
+except paramiko.ssh_exception.NoValidConnectionsError as err:
+    print(f'Server offline: {err}')
+except paramiko.ssh_exception.BadHostKeyException as err:
+    print(f'Wrong IP address: {err}')
+```
+
+**What happened:** Built the full labcheck tool and tested it against two real servers — the Beelink (password auth via Tailscale) and an EC2 t2.micro (key-based auth via .pem file). Both worked with the same tool, same commands, different auth methods.
+
+Real bugs hit and fixed:
+
+- `free -g` returns 0 for memory_total on t2.micro (1GB rounds to 0 in gigabytes) → ZeroDivisionError. Fixed by switching to `free -m` (megabytes) — now works on both Beelink (28475MB) and EC2 (911MB)
+- `--key` flag needed to be `default=None` so password auth still works when no key is provided
+- `getpass.getpass()` moved inside the `else` block — only prompts for password when no key file is provided
+- Running labcheck FROM inside the EC2 SSH session → "No such file or directory" — labcheck runs on YOUR Mac, not the remote server
+
+**Output — Beelink:**
+
+```
+Host:    100.108.108.86
+Disk:    12% used
+Memory:  871MB / 28475MB (3.06% used)
+Uptime:  up 1 day, 1 hour, 24 minutes
+Status:  All systems normal
+```
+
+**Output — EC2 t2.micro:**
+
+```
+Host:    3.146.255.160
+Disk:    33% used
+Memory:  411MB / 911MB (45.12% used)
+Uptime:  up 31 minutes
+Status:  All systems normal
+```
+
+**Learned:** `--key default=None` + `if args.key` branch makes one tool support two different auth methods cleanly — key-based for cloud (EC2 .pem), password for on-prem (Beelink). `free -g` rounds to whole gigabytes and returns 0 for servers with less than 1GB RAM — always use `free -m` for a tool that needs to work across different instance sizes. `getpass.getpass()` should only be called when actually needed — putting it in the `else` branch means EC2 connections never prompt for a password unnecessarily. The same Ubuntu commands (`df`, `free`, `uptime`) work identically on a $249 mini PC at home and a cloud VM in AWS — this is the whole point of Linux as a standard.
