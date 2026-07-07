@@ -59,7 +59,7 @@ try:
         result = f'''
         =====================================
         Beelink Health Report
-        {timestamp}
+        {dt}
         =====================================
         Host:    {args.host}
         Disk:    {disk_usage_result} used
