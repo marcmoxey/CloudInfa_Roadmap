@@ -1,4 +1,4 @@
-# Cloud Infrastructure Roadmap
+# Cloud Engineer Roadmap
 
 A self-paced, hands-on roadmap from Software Engineer to Cloud Infrastructure / Platform Engineer — built entirely on real hardware I own and operate.
 
@@ -126,14 +126,13 @@ Stage_005/          # (coming) Docker + Kubernetes manifests
 Stage_006/          # (coming) GitHub Actions + ArgoCD
 Stage_007/          # (coming) Prometheus + Grafana + Falco
 Stage_008/          # (coming) Security audit + portfolio cleanup
-Python.md           # Python learning journal — real bugs, real fixes
 ```
 
 ---
 
 ## Career Target
 
-Building toward **Cloud Infrastructure / Platform Engineering** roles in NYC
+Building toward **Cloud Engineer / Platform Engineering** roles in NYC
 
 **Certifications in progress:**
 - AWS Solutions Architect Associate (SAA-C03) — studying alongside Stage 3
