@@ -1,42 +1,42 @@
+## Date: 07/2026
 
-**Star Topology** 
-- Device are connected individually via c central networking device
-	- Scalability and reliability , more expensive
-	- More  maintenance the more they scale
+**Topic:** Local Area Network (LAN) Topologies (TryHackMe)
 
-**Bus Topology** 
-- Relies on a single connection (backbone)
--  Data slow and bottlenecked because each device on the same cable 
--  Single point of failure 
+**Notes:**
 
-**Ring Topology**
-- Device are connected to each other in loops 
-- Send data across the loops till it reach the dedicated device 
-- if has data to send it will send it own data first before send the other device data 
+**Topologies:**
 
-**What is a Router?** 
--  Connect networks and pass data between them
+- **Star**: every device connects individually to a central networking device (switch/router). Scalable and reliable, but more expensive and maintenance grows with scale.
+- **Bus**: all devices share a single backbone cable. Slow, bottlenecked (one cable, all traffic), single point of failure.
+- **Ring**: devices connected in a loop, data passes device to device until it reaches the target. Each device sends its own data first before passing along others'.
 
-**What is a Switch?**
-- dedicated devices within a network that are designed to aggregate multiple other devices using ethernet 
--  uses packet switch to break down data 
+**Core devices:**
 
-**A Primer on Subnetting**
-- Subnetting is split a network into to smaller, miniature networks within itself 
--  Splitting up the number of hosts that can fit within a network, called a subnet mask
-	-  Subnets use IP address to  Identify network, host address and default gateway
-		-  Network Address - identify network existence 
-		- Host Address - identify a device on the subnet 
-		- Default Gateway - special address assigned to a device on the network that can send information to another network
+- **Router**: connects separate networks and passes data between them.
+- **Switch**: aggregates multiple devices within ONE network using ethernet, using packet switching to direct traffic to the right device.
 
-**Address Resolution Protocol (ARP)**
-- allows a device to associate its MAC address with an IP address on the network
+**Subnetting:**
 
-**How does ARP Work?**
-- Within a network has a ledger to store information, (cache) 
--  Cache store identifiers of other devices on the network
-- ARP Request - message broadcast on the network to other devices asking "What is the mac address that owns the IP address" 
--  ARP Reply - with its MAC address; the requesting device remember this mapping stores it in ARP cache
+- Splits one network into smaller networks (subnets).
+- A subnet mask determines how many hosts can fit in a subnet.
+- Three address types within a subnet:
+    - **Network Address** — identifies the subnet itself exists
+    - **Host Address** — identifies a specific device on the subnet
+    - **Default Gateway** — the address that lets a device send traffic OUT to a different network
 
-**Dynamic Host Configuration Protocol (DHCP)**
-- device connects to a network, if it has not already been manually assigned an IP address, it sends out a request (DHCP Discover) to see if any DHCP servers are on the network. The DHCP server then replies back with an IP address the device could use (DHCP Offer). The device then sends a reply confirming it wants the offered IP Address (DHCP Request), and then lastly, the DHCP server sends a reply acknowledging this has been completed, and the device can start using the IP Address (DHCP ACK).
+**ARP (Address Resolution Protocol):**
+
+- Maps a device's MAC address to its IP address.
+- **ARP Request**: broadcast to the network — "who owns this IP address?"
+- **ARP Reply**: the owning device responds with its MAC address; requester caches this mapping.
+
+**DHCP (Dynamic Host Configuration Protocol):**
+
+- How a device gets an IP address automatically (vs manually/statically assigned).
+- 4-step handshake: **Discover** (device asks if any DHCP server exists) → **Offer** (server proposes an IP) → **Request** (device confirms it wants that IP) → **ACK** (server confirms, device can now use it).
+
+**Learned:** This is the missing piece that makes my Stage 1 Netplan config make sense at a deeper level. When I set `dhcp4: no` and manually specified `addresses: - 192.168.0.52/24`, I was explicitly OPTING OUT of the DHCP Discover/Offer/Request/ACK handshake and hardcoding what DHCP would otherwise have assigned automatically. My router's `via: 192.168.0.1` in the routes section is literally the "Default Gateway" concept from this room.
+
+The Star topology description matches my actual home network exactly — Beelink, PC, and (eventually) NAS all connect individually to my router, which is the central networking device.
+
+**Direct connection to upcoming VPC work:** Subnetting here (network address / host address / default gateway) is the exact same three concepts I'll configure explicitly in AWS VPC: a CIDR block for the network, individual EC2 instances as hosts, and a route table pointing to an Internet Gateway as the gateway.
