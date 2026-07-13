@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Stage_003/Network Fundaments/OSI Model.md",
+                "file": "Stage_003/Network Fundaments/Packets & Frames.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OSI Model"
+              "title": "Packets & Frames"
             }
           }
         ]
@@ -186,11 +186,12 @@
   },
   "active": "c07e0552f3040bba",
   "lastOpenFiles": [
-    "Stage_003/Network Fundaments/Local Area Network (LAN) Topologies.md",
     "Stage_003/Network Fundaments/OSI Model.md",
+    "Stage_003/Network Fundaments/Packets & Frames.md",
+    "Stage_003/Network Fundaments/Local Area Network (LAN) Topologies.md",
+    "Stage_003/AWS/Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_003/Network Fundaments/Network.md",
     "Stage_003/Network Fundaments",
-    "Stage_003/AWS/Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_002/Python.md",
     "Stage_003/AWS/Untitled",
     "Stage_002/Python.md",

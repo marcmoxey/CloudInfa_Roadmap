@@ -1,1 +1,25 @@
 
+**What is OSI (**O**pen **S**systems **I**interconnection) Model**
+- framework dictating how all networked devices will send, receive and interpret data.
+- Set of responsibilities
+	- Application 
+		- how user interact with data sent or received (GUI)
+	- Presentation
+		- translator for data to and from the application layer
+		- data sent to a computer in one format destined for in another format
+	- Session
+		- create and maintain connection to other computer; when connection is established a session is create 
+		- responsible for closing the connection
+	- Transport
+		- transmit data across a network
+		- TCP (Transmission Control Protocol) - reserves constant connection between two devices for time it takes for the data to be sent and received 
+		- UDP (User Datagram Protocol) - data gets sent to computer whether it gets there or not; faster than TCP
+	- Network
+		- determines the most optimal path 
+		- **OSPF** (**O**pen **S**hortest **P**ath **F**irst) and **RIP** (**R**outing **I**nformation **P**rotocol).
+		- handle ip address
+	- Data link
+		- physical addressing of the transmission, using network interface card and comes with a mac address 
+	- Physical
+		- Device using electrical signal to transfer data between each other (0s & 1s)
+		-  ethernet cables
