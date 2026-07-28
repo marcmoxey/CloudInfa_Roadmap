@@ -61,7 +61,113 @@
 		- Must be launch in public subnet 
 		- Must disable EC2 setting Source / destination check
 		- Route table must be config to route traffic from private subnets to NAT instance 
+	- NAT Gateways
+		- AWS-manage NAT
+		- Higher bandwidth 
+		- Higher availability
+		- No administration 
+	- Pay Per hour for usage & bandwidth
+	- NATGW is created in specific AZ,  users Elastic IP
+	- Can't be used by EC2 instance in the same subnet (only from other subnet)
+	- Requires an IGW (Private subnet -> NATGW -> UGW)
+	- 5GBPS of bandwidth w/ automatic scaling up to 100 GBPS
+	- No Security Groups to mange / required 
 
-
-
+	- NAT Gateways w/ high Availability 
+		- NAT Gateways is resilient within a single AZ
+		- Must create multiple NAT Groups in multiple AZs for fault-tolerance
+		- No cross AZ failover needed because if an AZ goes down it doesn't need NAT
+	- Regional NAT Gateway (RNAT)
+		- Highly available NAT Gateway associated with VPC
+		- RNAT has it own route tables
+		- Elimination the need for Per-AZ deployments (shared across AZ)
+		- Don't need to create public subnets in your VPC to host RNAT
 	
+	- NACL & Security Groups 
+		- Network Access Control List (NACL)
+			- NACL are like firewall which control traffic from and to subnets 
+			- One NACL per subnet, new subnets are assigned the Default NACL
+			- Define NACL rules:
+				- Rules have a number (1-32766), higher precedences with a lower number 
+				- First rules match will drive the decision
+					- EX: Define #100 ALLOW 10.0.0.10/32 & #200 DENY 10.0.0.10/32, the IP address will be allowed because 100 has higher precedence over 200
+					- Last rule is asterisk(*) and denies a request in case of no rule match
+					- AWS recommends adding rules by increment of 100
+				- Newly created NACLs will deny everything 
+				- NACL are great way of blocking a specific IP Address at subnet level
+			
+			- Default NACL
+				- Accept everything inbound/outbound with the subnets its associated with
+			
+			-  Ephemeral Ports
+				- For any two endpoints to establish a connection, they must use ports 
+				- Clients connect to defined port & expect a response on an ephemeral port 
+				- Different OS us different port ranges 
+					- EX: IANA & MS Windows 10 -> 49152 - 65535
+						- Many Linux Kernels -> 32768 - 60999
+			
+			- VPC Peering
+				- Privately connect two VPC using AWS network
+				- Make them behave as if they were in the same network
+				- Must not have overlapping CIDRs
+				- VPC Peering connection is not transitive(must be established for each VPC that need to communicate with one another)
+				- Must update route tables in each VPC subnets to ensure EC2 instance can communicate with each other 
+				- Can create VPC Peering connection between VPC in different AWS accounts/ regions 
+				- Can reference a security group in Peered VPC (works across account - same region)
+			
+			- VPC Endpoints (AWS Private Link)
+				- Every AWS service is publicly exposed (Public URL)
+				- VPC Endpoints (Power by AWS private Link) allows you to connect to AWS Services using a private network instead of using the public internet
+				- Redundant and scale horizontally
+				- Remove the need of IGW, NATGW to access AWS Service
+				- In case of issues 
+					- Check DNS setting Resolution in your VPC
+					- Check Route Tables
+				- Type of Endpoints
+					- Interface Endpoint(powered by Private Link)
+						- Provision an ENI (Private IP address)  as an entry point(must attach a Security Group)
+						- Supports most AWS services
+						- $/hr + $/GB  of data of data process
+					- Gateway Endpoints
+						- Provisions a gateway and must be used as a target in a Route Table (does not use Security Groups)
+						- Supports both S3 & DynamoDB 
+						- Free 
+					- Gateway or Interface Endpoint for S3
+						- Gateway is preferred on exam
+						- Cost: Free for Gateway; $ for interface endpoint
+						- Interface Endpoint is preferred access is required from on-premises(site to site VPN or Direct connect) a different VPC or different region 
+					
+				- VPC Flow Logs
+					- Capture information about IP traffic going into your interfaces 
+						- VPC flow logs
+						- Subnet flow logs
+						- Elastic Network Interface (ENI) flow flows
+					- Helps to monitor & troubleshoot connectively issues 
+					- Flow logs data can go to S3, Cloudwatch Logs & Kinesis Data Firehose
+					- Captures network information from AWS Manage interfaces too: ELB, RDS, Elasticache, Redshift, working space, NATGW, Transit Gateway
+					
+					- VPC Flow Log Syntax
+						- srcaddr & dstaddr - help identify problematic IP
+						- srcport & dstport - help identity problematic port 
+						- Action - success or failure of the request due to Security Group / NACL 
+						- Can be used for analytics on usage pattern or malicious behavior 
+						- Query VPC flow logs using Athena on S3 or Cloudwatch Logs insight 
+					
+					- Troubleshoot SG & NACL Issues 
+						- Look at action field 
+							- Incoming Request 
+								- Inbound REJECT -> NACL or SG 
+								- Inbound ACCEPT, outbound REJECT -> NACL
+							- Outgoing Request
+								- Outbound REJECT -> NACL or SG
+								- Outbound ACCPET, Inbound REJECT -> NACL
+					- VPC  Flow Logs - Cloudwatch
+						- IAM Service role associated with VPC Flow Logs must have the required permission to publish Logs to Cloudwatch Logs
+						- logs:CreateLogGroup, logs:CreateLogStream or logs:PutLogsEvent
+								
+					
+
+			
+
+
+
