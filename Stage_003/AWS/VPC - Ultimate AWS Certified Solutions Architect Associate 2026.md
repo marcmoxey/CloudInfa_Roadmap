@@ -183,6 +183,7 @@
 						- Low-cost hub  & spoke model for primary or secondary network connectivity between different locations(VPN only)
 						- It's a VPN connection so it goes over the public internet
 						- To set it up connect multiple VPN connection on the same VGW, set up dynamic routing  & configure route table 
+					
 					- Direct Connect (DX)
 						- Provides a dedicated private connection from a remote network to your VPC
 						- Dedicated connection must be setup between your DC & AWS Direct connection locations
@@ -211,6 +212,31 @@
 								- one connection at multiple locations 
 							- Maximum resiliency for critical workloads 
 								- Sperate connections terminating on separate devices in more than one location 
+						- Site-to-Site VPN connection as a backup
+							- In case Direct connect fails, you can set up a backup Direct connect connection(expensive), or a site-to-site VPN connection
+					-  Transit Gateway 
+						- For having transitive peering between thousands of VPC & on-premises hub & spoke (star) connection
+						- Regional resource, can work cross-region
+						- Share cross-account using Resources Access Manager (RAM)
+						- Peer Transit Gateways across regions
+						- Route Table: limit which VPC can talk to other VPC
+						- Works with Direct connection Gateway VPN connections 
+						- Support IP Multicast(not supported by other AWS Services )
+					- Transit Gateway: Site-to-site VPN ECMP
+						- ECMP = Equal cost multi-path routing
+						- Routing strategy to allow to forward a packet over multiple best path 
+						- Use Case:
+							- Create multiple site-to-site VPN connection to increase the bandwidth of your connection to AWS
+					-   VPC Traffic Mirroring 
+						- Allows you to capture & inspect network traffic in your VPC
+						- Route the traffic to Security appliances that you manage
+						- Capture the traffic
+							- From (Source) -> ENIs
+							- To (Target) -> An ENI or Network Load Balancer
+						- Capture all packets or capture the packets of your interest(optionally, truncate packets)
+						- Source & target can be in the same VPC or different VPCs (VPC Peering)
+						- Use Case:
+							- EX: Content inspecting, threat monitoring and troubleshooting 
 				
 								
 					
