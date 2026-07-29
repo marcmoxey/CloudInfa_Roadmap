@@ -164,6 +164,54 @@
 					- VPC  Flow Logs - Cloudwatch
 						- IAM Service role associated with VPC Flow Logs must have the required permission to publish Logs to Cloudwatch Logs
 						- logs:CreateLogGroup, logs:CreateLogStream or logs:PutLogsEvent
+				- AWS Site-To-Site VPN
+					- Virtual Private Gateway (VGW)
+						- VPN concentrator on the AWS side of the VPN connection
+						- VGW is create & attached to the VPC from which you want to create Site-to-Site VPN connection
+						- Possibility to customize the ASN (Autonomous System Number)
+					- Customer Gateway Device 
+						- Software application or physical device on customer side of the VPN connection
+					- Site-to-Site VPN connection 
+						- Customer Gateway Device (on-premises)
+							- What IP address is used?
+								- Public internet-routable IP address your customer Gateway Device
+								- If it's behind a NAT device that's enable for NAT Traversal (NAT-T), use the public IP address of the NAT device
+								- IMPORTANT STEP: Enable Route Propagation for the Virtual Private Gateway in the Route Table that is  associated with  your subnet 
+								- if you need to ping your EC2 instance from on-premises make sure you add the ICMP Protocol on the inbound of security groups 
+					- AWS VPN Cloudhub
+						- Provide secure communication between multiple sites if you have multiple VPN connection
+						- Low-cost hub  & spoke model for primary or secondary network connectivity between different locations(VPN only)
+						- It's a VPN connection so it goes over the public internet
+						- To set it up connect multiple VPN connection on the same VGW, set up dynamic routing  & configure route table 
+					- Direct Connect (DX)
+						- Provides a dedicated private connection from a remote network to your VPC
+						- Dedicated connection must be setup between your DC & AWS Direct connection locations
+						- You need to setup a Virtual Private Gateway on your VPC
+						- access public resources(S3) & private(EC2) on same connections
+						- Use case:
+							- increase bandwidth throughput; working with large data set; low cost
+							- More consistent network experience; application using real time data  feeds 
+							- Support IPV4 & IPV6
+						-    Direct Connect Gateway
+							- If you want to setup a Direct connect to one or more VPC in many different regions(same account) you must use a Direct connect Gateway 
+								- Connection Types
+									- Dedicated connection: from 1/GBPS to 400/GBPS
+										- Physical ethernet port dedicated to a customer
+										- Request made to AWS first, then completed by AWS Connect partners
+									-  Hosted connection: from 50/MBPS to 25/GBPS
+										- connection requests are made via AWS Direct connection partners
+										- Capacity can be added or removed on demand 
+								- Lead times are often linger than 1 month to establish a near connect 
+						- Direct connect - Encryptions
+							- Data in transit is not encrypted but is private 
+							- AWS Direct connect + VPN provides an IPsec-encrypted private connection
+							- Good for an extra level of security, but slightly more complex to put in place 
+						- Direct Connect - Resiliency 
+							- High Resiliency for critical workloads 
+								- one connection at multiple locations 
+							- Maximum resiliency for critical workloads 
+								- Sperate connections terminating on separate devices in more than one location 
+				
 								
 					
 
