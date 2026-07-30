@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Stage_003/AWS/VPC - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+                "file": "Stage_003/AWS/EC2 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "VPC - Ultimate AWS Certified Solutions Architect Associate 2026"
+              "title": "EC2 - Ultimate AWS Certified Solutions Architect Associate 2026"
             }
           }
         ]
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Linux & Networking/Linux/Linux Fundamentals - 001.md",
+                "file": "Stage_003/AWS/EC2 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Linux Fundamentals - 001"
+              "title": "Outline of EC2 - Ultimate AWS Certified Solutions Architect Associate 2026"
             }
           }
         ],
@@ -186,9 +186,10 @@
   },
   "active": "60c18f9372ffffd6",
   "lastOpenFiles": [
-    "Stage_003/AWS/EC2 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
-    "Stage_003/AWS/AWS Regions - AWS Solutions Architect Associate.md",
     "Stage_003/AWS/VPC - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+    "Stage_003/AWS/EC2 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+    "Untitled.base",
+    "Stage_003/AWS/AWS Regions - AWS Solutions Architect Associate.md",
     "Stage_003/AWS/IAM - Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_001/Linux/Linux Fundamentals - Journal.md",
     "README.md",
@@ -210,7 +211,6 @@
     "Stage_002/Ch_019/tmp7u_1mvfs",
     "Stage_002/Ch_019/tmpd5olp7mm",
     "Stage_002/Ch_019/stopwatch.py",
-    "Stage_002/Ch_019/tmpx7365xl_",
     "Stage_001/Bash Scripting/Disk-Usage.md",
     "Stage_001/Bash Scripting/Scripting.md",
     "Bash Scripting/Scripting.md",

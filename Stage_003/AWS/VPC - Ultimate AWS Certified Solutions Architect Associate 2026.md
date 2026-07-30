@@ -237,6 +237,39 @@
 						- Source & target can be in the same VPC or different VPCs (VPC Peering)
 						- Use Case:
 							- EX: Content inspecting, threat monitoring and troubleshooting 
+							
+					- What is IPv6
+						- Successor of IPv4
+						- Designed to provide 3.4x10^38 unique IP Address 
+						- Every IPv6 address in AWS is public & internet routable(no private range)
+						- Format:  x.x.x.x.x.x.x (X is hexadecimal, range can be from 0000 to ffff)
+					- IPv6 in VPC 
+						- UPv4 cannot disable for your VPC and subnets 
+						- You. can enable IPv6 (They're public IP address to operate in dual-stack mode)
+						- Your EC2 instance will get at least private internal IPv4 and public IPv6
+					- IPv4 Troubleshooting 
+						- IPv4 cannot be disable for  your VPC & subnets
+						- So if you cannot launch an EC2 instance in your subnet
+							- It's not because it cannot acquire IPv6(The space is very large)
+							- It's because there are no available IPv4 in your subnet
+						- SOLUTION: Create a new IPv4 CIDR in your subnet 
+						
+					- Egress-Only internet gateway
+						- Used for IPv6 only 
+						- Similar to NAT Gateway but for IPv6
+						- Allows instances in your VPC outbound connections over IPv6 while preventing the internet to initiate an IPv6 connection to your instance 
+						- Must update route table
+						
+					- VPC Summary
+						- CIDR - IP Range
+						- VPC -> Virtual Private Cloud -> We define a list of IPv4 & IPv6
+						- Subnets -> Tied to AZ, we define on a CIDR
+						- Internet Gateway - VPC level, provide IPv4 & IPv6 internet Access 
+						- Route Tables -> Must be edited to add routes from subnets to the IGW, VPC Peering Connections, VPC Endpoints 
+						- Bastion Host - Public EC2 instance to SSH into, that has SSH Connectivity to EC2 instance in private subnets
+						- NAT Instances - gives internet access to EC2 instance in private subnets. Old must be setup in public subnet disable Source / Destination check flag
+							
+						
 				
 								
 					

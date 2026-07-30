@@ -373,8 +373,108 @@ EC2 Instance Purchasing Options
 		- small gp2 volumes can burst IOPS to 3000
 		- Size of the volume & IOPS are limited, max IOPS is 16000
 		- 3 IOPS per GFB at 5334 GB are at max IOPS
-
+		- 
 - Provisioned IOPS (PIOPS)
+	- Critical business applications with sustained IOPS performance
+	- Application that need more than 16,000 IOPS
+	- Database workloads (sensitive to storage perf & consistency )
+		-io1 (4GB - 16TB)
+		- Max PIOPs - 64,000 for Nitro EC2 Instance & 22,000 for other 
+		- Can increase independently from storage size 
+	- io2 Block Express (4GB - 64TB)
+		- sub millisecond latency 
+		- Max PIOP: 256,000 with IOPS GB ratio of 1,000 : 1
+	- Supports EBS Multi-attach
+	- 
+- Hard Disk Drives
+	- Cannot be boot volume 
+	- 125GB to 16 TB
+	- Throughput Optimized HDD (st1)
+		- Big data warehouse, log processing
+		- Max throughput 500 MB - Max IOPS 250
+	- Cold HHD (st2)
+		- Data that is infrequently accessed
+		- Where lowest cost is important
+		- Max throughput 250mb - Max IOPS 250
+	
+- EBS Multi-Attach - io1/io2 family 
+	- Attach the same EBS volume to multiple EC2 instance in the same AZ
+	- Each instance has full read/write permission to performance volume 
+	- Use case
+		- higher application availability in clustered 
+		- Application must manage concurrent write operations
+	- Up to 16 EC2 instance at a time
+	- Must  use a file system that cluster aware 
+	
+- EBS Encryption
+	- Data at rest is encrypted inside the volume
+	- All data moving between the instance is encrypted 
+	- All snapshots are encrypted 
+	- All volumes create from snapshot is encrypted 
+	- Encryption & decryption are handle transparently 
+	- Minimal latency 
+	- Leverages keys from KMS (AES-256)
+	- Copy unencrypted snapshot allows encryption
+	- Snapshot of encrypted volumes are encrypted 
+- Encrypt an unencrypted EBS Volume
+	- Create an EBS snapshot of volume 
+	- Encrypted the EBS snaps (using copy)
+	- Create new EBS volume from snapshot
+	- Attach the encrypted volume to original instance
+	
+- Amazon EFS - Elastic File System
+	- Manage network file system
+	- EC2 instances in multi-AZ
+	- Highly available, scale, expensive, pay per use 
+	
+	- Elastic File System
+		- uses NFSv4.1 protocol
+		- Uses security group to control access to EFS
+		- Only compatible with linux base AMI
+		- Encryption at rest using KMS
+		- Posix file system(Linux)
+		- Filesystem scales automatically
+		
+	- Performance & Storage classes
+		- EFS Scale
+		- 1000s of concurrent NFS clients, 10GB/s throughput 
+		- Grow to petabyte-scale network file system; automatically
+	- Performance mode(set at EFS creation time)
+		- General purpose (default) - latency-sensitive
+		- Max i/o - higher latency, highly parallel
+	- Throughput mode 
+		- Brusting - 1TB = 50MB + brust up to 100MB
+		- Provisioned - set throughput regardless of stage size 
+		- Elastic - automatically scales throughput up or down base own your workload 
+	- Storage Tiers (Life cycle management feature - move file after N days)
+		- Standard: frequently access files 
+		- Infrequent access (EFS-IA): cost to retrieve file lower price to store 
+		- Archive: rarely accessed data, 50% cheaper 
+		- Implement life cycle polices to move files between storage tiers 
+	- Availability & durability 
+		- Standard: Multi-Az; great for Prod 
+		- One Zone: One AZ ; great for DEV
+		
+	- Elastic Block Store VS Elastic File System
+		- EBS Volume 
+			- One instance (Except multi attach io1/io2)
+			- Locked at AZ level
+			- gp2: IO increase if disk size increase 
+			- gp3 & io1: can increase IO independently 
+		- To migrate an EBS volume across AZ
+			- Take snapshot 
+			- Restore snapshot to another AZ
+			- EBS backups use IO & shouldn't run while application s handling a lot of traffic 
+			- Root EBS volume get terminate by default if EC2 instance get terminate
+		- EFS 
+			- Mounting 100s of instances across AZ
+			- EFS shared file system 
+			- Only Linux instance 
+			- EFS has higher price point 
+			- Can leverage storage tiers for cost saving 
+		
+
+
 
 
 
