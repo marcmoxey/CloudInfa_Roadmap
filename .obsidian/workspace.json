@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Stage_003/AWS/S3 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+                "file": "Stage_003/AWS/VPC - Ultimate AWS Certified Solutions Architect Associate 2026.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "S3 - Ultimate AWS Certified Solutions Architect Associate 2026"
+              "title": "VPC - Ultimate AWS Certified Solutions Architect Associate 2026"
             }
           }
         ]
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Stage_003/AWS/S3 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+                "file": "Stage_003/AWS/VPC - Ultimate AWS Certified Solutions Architect Associate 2026.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of S3 - Ultimate AWS Certified Solutions Architect Associate 2026"
+              "title": "Outline of VPC - Ultimate AWS Certified Solutions Architect Associate 2026"
             }
           }
         ],
@@ -186,8 +186,8 @@
   },
   "active": "60c18f9372ffffd6",
   "lastOpenFiles": [
-    "Stage_003/AWS/IAM - Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_003/AWS/S3 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
+    "Stage_003/AWS/IAM - Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_003/AWS/EC2 - Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Stage_003/AWS/VPC - Ultimate AWS Certified Solutions Architect Associate 2026.md",
     "Untitled.base",

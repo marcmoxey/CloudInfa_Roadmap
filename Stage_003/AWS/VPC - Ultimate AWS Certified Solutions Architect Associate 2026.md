@@ -262,12 +262,27 @@
 						
 					- VPC Summary
 						- CIDR - IP Range
-						- VPC -> Virtual Private Cloud -> We define a list of IPv4 & IPv6
-						- Subnets -> Tied to AZ, we define on a CIDR
+						- VPC - Virtual Private Cloud -> We define a list of IPv4 & IPv6
+						- Subnets - Tied to AZ, we define on a CIDR
 						- Internet Gateway - VPC level, provide IPv4 & IPv6 internet Access 
-						- Route Tables -> Must be edited to add routes from subnets to the IGW, VPC Peering Connections, VPC Endpoints 
+						- Route Tables - Must be edited to add routes from subnets to the IGW, VPC Peering Connections, VPC Endpoints 
 						- Bastion Host - Public EC2 instance to SSH into, that has SSH Connectivity to EC2 instance in private subnets
 						- NAT Instances - gives internet access to EC2 instance in private subnets. Old must be setup in public subnet disable Source / Destination check flag
+						- NAT Gateway - Manage AWS, Provides scalable internet access to private EC2 instance when the target is IPv4 address 
+						- NACL - Stateless, subnet rules for inbound and outbound don't forget Ephemeral Ports 
+						- Security Groups - Stateful, operate at EC2 instance level
+						- VPC Peering - Connect two VPC's with non overlapping CIDR non-transitive 
+						- VPC Endpoints - Provide private access to AWS service(S3, DynamaicDB, Cloudformation, SSM) within VPC/Subnet/ENI level, for ACCEPT & REJECT traffic help identifying attacks, analyze using Athena or Cloudwatch Logs insight 
+						- Site-to-site VPN -Setup a customer gateway on DC, virtual private gateway on VPC and site-to-site VPN over public internet 
+						- Direct Connect - Setup a Virtual Private Gateway on VPC and establish a direct Private Connection
+						- AWS PrivateLink / VPC Endpoint - Services
+							- Connect services privately from your service VPC to customer VPC
+							- Doesn't need  VPC Peering, public internet, NAT Gateway, Route Tables
+							- Must be used with Network Load Balancers & ENI
+						- ClassLink - Connect EC2-classic EC2 instance privately to your VPC
+						- Transit Gateway - Transitive peering connection for VPC,VPN & DX
+						- Traffic Mirroring - Copy network traffic from eNI's for further analysis
+						- Egress only Internet Gateway - Like NAT Gateway, but for IPv6
 							
 						
 				
