@@ -1,0 +1,81 @@
+
+- Amazon S3 
+	- "Infinitely scaling" storage
+	- Use Case
+		- EX: 
+			- Backup & storage
+			- Disaster Recovery 
+			- Archive 
+			- Hybrid Cloud storage 
+			- Application Hosting 
+			- Media hosting 
+			- Data lakes & big data analytics 
+			- Software delivery
+			- Static website 
+	- Buckets - S3 
+		- Store objects (files) in buckets (directional)
+		- Defined at region level
+		
+		- Naming 
+			- Shared Global namespace; have globally unique name (across all regions all accounts)
+			- Account Regional namespace; allows for "reuse" of same bucket name across regions
+			- Naming Constraints 
+				- Not an IP
+				- No uppercase, no underscore 
+				- Start with lowercase letter or number 
+				- Can't start with prefix xn-
+				- Cant end with suffix -s3 alias 
+	- Object - S3
+		- Have key 
+		- Key is full path 
+			- EX: S3://my-bucket/my_file.txt
+		- Key is compose of prefix + object name
+			- values are content of the body 
+			- Max size is 50TB
+			- If uploading more than 50TB, must use "multi-part upload"
+			- Metadata - list of text key/value pairs
+			- Tags - unicode key/value pair up to 10 
+			- Version ID if versioning is enable 
+		- Security - S3
+			- Iser-base 
+			- IAM-polices - which API calls allowed for specific user 
+			- Resourced-base
+				- Bucket polices -> bucket wide rules from S3 console allows across account 
+				- Object Access Control List (ACL) -> finer grain
+				- Bucket Access Control List (ACL) -> less common 
+			- IAM principal can access an S3 object if the user IAM permission ALLOW it or the resource policy allows it AND theres no explicit DENY 
+			- Encrypt object in S3 using encryption keys 
+		- Bucket Polices - S3
+			- JSON base polices
+				- Resources: bucket & object 
+				- Effect: Allow/Deny
+				- Actions: Set of API to allow or deny 
+				- Principal: The account or user to apply the policy 
+			- Use S3 bucket for policy to:
+				- Grant public access to the bucket 
+				- force object to be encrypted at upload
+				- Grant access to another account 
+			- Bucket setting for Block Public Access 
+				- Create to prevent company data leaks 
+				- If buckets should never be public; leave on 
+				- Can be set at the account level
+		- Static website hosting - S3
+			- Website url depending on region
+			- If get 403 error make sure bucket policy allows public reads 
+		- Versioning - S3 
+			- Enable at the bucket level
+			- Same key over write will change the "version"
+			- Best practice to version your buckets 
+				- Protects against untainted deletes 
+				- Easy roll back to previous version 
+				- Any file that is not versioned prior to enabling versioning will have version "null"
+				- Suspending versioning does not delete the previous versions 
+		- S3 Replication (CRR & SRR)
+			- Must enable versioning in source and destination buckets
+			- Cross-Region Replication (CRR) - two regions must be differnt 
+			- Same-Region Replication(SRR) - regions must be the same 
+			- Buckets can be in different AWS account 
+			- Copying 
+
+						
+	
