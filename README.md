@@ -1,8 +1,8 @@
-# Cloud Engineer Roadmap
+# Cloud Infrastructure Roadmap
 
-A self-paced, hands-on roadmap from Software Engineer to Cloud Infrastructure / Platform Engineer — built entirely on real hardware I own and operate.
+A self-paced, hands-on roadmap from Software Engineer to Cloud Infrastructure / Site Reliability Engineer — built entirely on real hardware I own and operate.
 
-**Current status:** Stage 3 (AWS) in progress · Stages 1-2 complete
+**Current status:** Stage 3 (AWS) — exam prep phase · Stages 1-2 complete
 
 ---
 
@@ -50,24 +50,30 @@ Built a real CLI tool that SSHes into remote servers and reports health metrics.
 python3 labcheck.py --host 100.108.108.86 --user mmoxey
 
 # Against EC2 (key-based auth)
-python3 labcheck.py --host <ec2-ip> --user ubuntu --key /path/to/key.pem
+python3 labcheck.py --host <ec2-ip> --user ec2-user --key /path/to/key.pem
 ```
+
+Tested successfully against both a home server and a live AWS EC2 instance in the same run.
 
 **Skills:** Python, argparse, Paramiko, regex, getpass, datetime, exception handling
 
 ---
 
-### 🔵 Stage 3 — AWS (In Progress)
-Standing up the same infrastructure in the cloud.
+### 🔵 Stage 3 — AWS (Exam Prep)
+Standing up real infrastructure in the cloud, now studying for AWS Solutions Architect Associate.
 
-- AWS CLI configured with IAM least-privilege user
-- EC2 instance launched, SSH'd into, terminated
+- AWS CLI configured with an IAM user (`marc-cli`)
+- EC2 instances launched, SSH'd into, and terminated (both Ubuntu and Amazon Linux)
 - S3 bucket created, files uploaded/downloaded, deleted
 - `s3_audit.py` — Boto3 script that scans all S3 buckets and flags any with public access enabled
+- `EC2_audit.py` — Boto3 script that scans **every AWS region** for running EC2 instances and reports a total count
+- **IAM least-privilege tested hands-on:** scoped an IAM user down to `ReadOnlyAccess`, confirmed reads succeeded and writes returned `Access Denied`
+- **Custom VPC built from scratch:** VPC → public subnet → Internet Gateway → route table (`0.0.0.0/0` → IGW) → EC2 launched inside it → SSH confirmed working end-to-end
+- **VPC Peering configured** between the custom VPC and the account's default VPC, with routes added on both sides and connectivity confirmed via `curl` between instances
 
-**In progress:** VPC, IAM roles, load balancer, complete Boto3 audit scripts
+**Currently:** full sequential review of AWS SAA course content + practice exams, ahead of sitting the AWS SAA-C03 exam.
 
-**Skills (so far):** EC2, S3, IAM, AWS CLI, Boto3
+**Skills:** EC2, S3, VPC (subnets, route tables, IGW, peering), IAM (users, least-privilege policies), AWS CLI, Boto3, multi-region scripting
 
 ---
 
@@ -78,6 +84,7 @@ Rebuild everything from Stage 3 as code. One command to provision, one to destro
 - IaC scanning with Checkov and tfsec
 - Ansible playbook for Beelink configuration management
 - Terraform Associate exam
+- CompTIA Security+ study (parallel track — keeps govtech/DMV market open)
 
 ---
 
@@ -88,6 +95,7 @@ Turn the Beelink into a small Kubernetes cluster.
 - Helm charts, Pod Security Standards, OPA Gatekeeper
 - External Secrets Operator (AWS Secrets Manager → k3s pods)
 - Container image scanning with Trivy
+- Deploy a game server (Minecraft/Valheim) with autoscaling tuned for player load
 
 ---
 
@@ -103,7 +111,8 @@ Push code → Beelink redeploys itself automatically.
 ### 🔲 Stage 7 — Monitoring + Observability
 - Prometheus + Grafana (dashboards, alerting)
 - Falco (runtime security monitoring)
-- Python app instrumented with Prometheus metrics
+- Defined SLOs for the game server workload; disaster recovery drill with timed restore-from-backup
+- Incident postmortem documentation
 
 ---
 
@@ -120,25 +129,37 @@ Push code → Beelink redeploys itself automatically.
 ```
 Stage_001/          # Bash scripts — disk monitoring, server setup
 Stage_002/          # Python — labcheck CLI tool, practice files, journal
-Stage_003/          # AWS — Boto3 scripts, EC2/S3/VPC work
+Stage_003/          # AWS — Boto3 scripts (s3_audit.py, EC2_audit.py), VPC/IAM work
 Stage_004/          # (coming) Terraform + Ansible
 Stage_005/          # (coming) Docker + Kubernetes manifests
 Stage_006/          # (coming) GitHub Actions + ArgoCD
 Stage_007/          # (coming) Prometheus + Grafana + Falco
 Stage_008/          # (coming) Security audit + portfolio cleanup
+Python.md           # Python learning journal — real bugs, real fixes
 ```
 
 ---
 
 ## Career Target
 
-Building toward **Cloud Engineer / Platform Engineering** roles in NYC
+Building toward **Cloud Infrastructure / Site Reliability Engineering**, with a specific interest in gaming and media infrastructure — scaling, monitoring, and disaster recovery for systems under real user load.
 
-**Certifications in progress:**
-- AWS Solutions Architect Associate (SAA-C03) — studying alongside Stage 3
+**Primary market:** NYC private sector · **Secondary:** DC/Northern Virginia (govtech) and Austin, TX
+
+Expected job search: Stage 5-6 (approx. November 2026)
+
+**Certifications:**
+- AWS Solutions Architect Associate (SAA-C03) — in progress
 - Terraform Associate — after Stage 4
+- CompTIA Security+ — parallel track for DMV/govtech
 - CKA (Certified Kubernetes Administrator) — after Stage 5
 
 ---
 
+## Security Notes
+
+- No credentials, API keys, or `.pem` files are committed to this repo
+- `labcheck.py` uses `getpass` for password input — never stores credentials
+- AWS access keys stored in `~/.aws/credentials` (not in repo)
+- IAM least-privilege practiced hands-on (see Stage 3) — not just theoretical
 
