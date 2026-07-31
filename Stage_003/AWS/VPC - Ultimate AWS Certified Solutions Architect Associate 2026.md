@@ -283,6 +283,66 @@
 						- Transit Gateway - Transitive peering connection for VPC,VPN & DX
 						- Traffic Mirroring - Copy network traffic from eNI's for further analysis
 						- Egress only Internet Gateway - Like NAT Gateway, but for IPv6
+						
+						- Networking Cost in AWS per GB
+							- Use Private IP instead of Public IP for good saving & better network performance
+							- Use same AZ for maximum saving (at a cost of high availability)
+							- Minimizing egress traffic network cost 
+								- Egress traffic: outbound traffic (From AWS to outside)
+								- Ingress traffic: inbound traffic -> from outside to AWS (typically free)
+							- Try to keep as much internet traffic within AWS to minimize cost 
+							- Direct Connect Location that are co-located in the same AWS Region result in lower cost for egress network 
+							- S3 Data Transfer Pricing - Analysis for USA
+								- S3 ingress: Free
+								- S3 to internet: $0.09 per GB
+								- S3 Transfer Acceleration
+									- Faster transfer times(50 to 500% better)
+									- Additional cost on top of Data Transfer Pricing: $0.04 + $0.08 per GB
+								- S3 to Cloudfront: $0.00 per GB
+									- Cloudfront to internet: $0.085 per GB / slightly cheaper than S3
+										- Caching capability (lower latency)
+										- Pricing(7x Cheaper with Cloudfront)
+										- S3 Cross Region Replication: $0.02 per GB
+									
+						- NAT Gateway  VS Gateway VPC Endpoint 
+							- NAT 
+								- $0.045 NAT Gateway / hour
+								- $0.045 NAT Gateway data processed / GB 
+								- $0.09 Data Transfer out to S3 (Cross-region)
+								- $0.00 Data Transfer out to S3 (Same-region)
+							- Endpoints
+								- No cost for using Gateway Endpoint $0.01 Data transfer in/out (Same region)
+								
+						- Network Protection on AWS
+							- Network Access Control List (NACL)
+							- Amazon VPC Security Groups
+							- AWS WAF (Protect against malicious request)
+							- AWS Shield & AWS Shield Advanced
+							- AWS Firewall Manager (To manage them across account)
+							
+						- AWS Network Firewall
+							- Protect your entire Amazon VPC
+							- From layer 3 to layer 7 protection
+							- Any direction, you can inspect
+								- VPC to VPC internet
+								- inbound from internet
+								- outbound to internet
+								- To/from Direct Connect & Site-to-Site VPN
+							- Internally the AWS network Firewall uses AWS Gateway Load Balancer
+							- Rules can be centrally managed cross-account by AWS Firewall Manager to apply 
+							- To many VPCs
+							
+						- Network Firewall - Fine Grained Controls 
+							- Supports 1000s of rules
+								- IP & Port 
+									- EX: 10,000 IPs filtering 
+								- Protocol
+									- EX: Block the SMB Protocol for outbound commutation 
+								- Stateful domain list rule group: only allows outbound traffic to (*).mycorp.com or third party software repo
+								- General pattern matching using regex 
+								- Traffic filtering: Allow, drop, or alert the traffic that matches rule
+								- Active flow inspection to protect against network threats with intrusion - prevention capacities ( like Gateway Load Balancer, but all managed AWS)
+								- Send logs of rule matches to Amazon S3, Cloudwatch Logs, Kinesis Data Firehose
 							
 						
 				
